@@ -1,2 +1,2 @@
 # mcaibonds
-Python script for pulling yields from BlackRock bond latter widget.
+Python script for pulling yields from BlackRock bond ladder widget.
