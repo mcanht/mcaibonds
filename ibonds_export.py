@@ -32,9 +32,9 @@ def download_ibonds_with_all_bonds():
         except Exception as e:
             print(f"Cookie banner handling notice: {e}")
         
-        # Zoom out the web page to 75% so elements scale nicely within the custom window
-        print("Zooming out webpage to 75%...")
-        page.evaluate("document.body.style.zoom = '0.75'")
+        # Zoom out the web page to 70% so elements scale nicely within the custom window
+        print("Zooming out webpage to 70%...")
+        page.evaluate("document.body.style.zoom = '0.70'")
         page.wait_for_timeout(1500)
         
         # Wait for the 'BOND TYPE' section to load safely
@@ -57,25 +57,25 @@ def download_ibonds_with_all_bonds():
         print("Waiting for table data to update...")
         page.wait_for_timeout(4000)
         
-        # Switch over to "CUSTOMIZE LADDER" before downloading
-        print("Clicking 'CUSTOMIZE LADDER' tab...")
+        # Switch over to "ESTIMATED NET ACQUISITION YIELD" before downloading
+        print("Clicking 'ESTIMATED NET ACQUISITION YIELD' tab...")
         try:
-            customize_tab = page.locator("text=CUSTOMIZE LADDER")
-            customize_tab.first.wait_for(state="visible", timeout=10000)
-            customize_tab.first.click(force=True)
-            print("Successfully clicked 'CUSTOMIZE LADDER'")
+            yield_tab = page.get_by_text("ESTIMATED NET ACQUISITION YIELD", exact=False).locator("visible=true").first
+            yield_tab.wait_for(state="visible", timeout=10000)
+            yield_tab.click(force=True)
+            print("Successfully clicked 'ESTIMATED NET ACQUISITION YIELD'")
             page.wait_for_timeout(2000)
         except Exception as e:
-            print(f"Notice during customize ladder click: {e}")
+            print(f"Notice during estimated net acquisition yield click: {e}")
         
-        # Scroll down slightly to make sure the download button is fully inside the viewport
+        # Scroll down to make sure the download button is inside the viewport
         print("Scrolling down to download button...")
-        page.evaluate("window.scrollBy(0, 600)")
+        page.evaluate("window.scrollBy(0, 3500)")
         page.wait_for_timeout(1000)
         
-        # Locate the download button and trigger the file download event
+        # Target only the visible 'Download XLS' button on the current tab
         print("Locating and clicking 'DOWNLOAD XLS'...")
-        download_btn = page.locator("text=DOWNLOAD XLS").first
+        download_btn = page.get_by_text("Download XLS", exact=False).locator("visible=true").first
         download_btn.wait_for(state="visible", timeout=15000)
         
         print("Triggering download...")
@@ -87,7 +87,7 @@ def download_ibonds_with_all_bonds():
         # Extract the original extension (e.g., .xls or .xlsx) and format today's date
         original_ext = Path(download.suggested_filename).suffix or ".xlsx"
         date_stamp = datetime.now().strftime("%m_%d_%y")
-        file_name = f"yiel-table_{date_stamp}{original_ext}"
+        file_name = f"yield-table_{date_stamp}{original_ext}"
         destination_path = target_folder / file_name
         
         # Save the file into your OneDrive Bond ETF's folder
